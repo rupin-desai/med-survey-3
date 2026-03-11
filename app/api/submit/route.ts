@@ -1,62 +1,100 @@
 import { NextRequest, NextResponse } from "next/server";
-
-// Temporary in-memory storage (will be replaced with Vercel serverless DB)
-const submissions: Map<string, Record<string, unknown>> = new Map();
+import prisma from "@/lib/prisma";
 
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const { city, doctorName, uin, interestedInSemaglutide, submittedAt, isUpdate } = body;
-
-    // Validate required fields
-    if (!city || !doctorName || !uin || !interestedInSemaglutide) {
-      return NextResponse.json(
-        { success: false, message: "Missing required fields" },
-        { status: 400 }
-      );
-    }
-
-    // Check for duplicate submission (by UIN)
-    if (submissions.has(uin) && !isUpdate) {
-      return NextResponse.json(
-        { success: false, duplicate: true, message: "This UIN has already submitted a response" },
-        { status: 409 }
-      );
-    }
-
-    // Store/update submission
-    const submission = {
+    const {
       city,
       doctorName,
       uin,
       interestedInSemaglutide,
       submittedAt,
-      updatedAt: isUpdate ? new Date().toISOString() : undefined,
-    };
+      isUpdate,
+    } = body;
 
-    submissions.set(uin, submission);
+    // Validate required fields
+    if (!city || !doctorName || !uin || !interestedInSemaglutide) {
+      return NextResponse.json(
+        { success: false, message: "Missing required fields" },
+        { status: 400 },
+      );
+    }
 
-    console.log(`Survey submission ${isUpdate ? "updated" : "received"}:`, submission);
+    // Check for existing submission by UIN
+    const existing = await prisma.submission.findUnique({
+      where: { uin },
+    });
+
+    if (existing && !isUpdate) {
+      return NextResponse.json(
+        {
+          success: false,
+          duplicate: true,
+          message: "This UIN has already submitted a response",
+        },
+        { status: 409 },
+      );
+    }
+
+    if (isUpdate && existing) {
+      // Update existing submission
+      await prisma.submission.update({
+        where: { uin },
+        data: {
+          city,
+          doctorName,
+          interestedInSemaglutide,
+          updatedAt: new Date(),
+        },
+      });
+
+      return NextResponse.json({
+        success: true,
+        message: "Response updated successfully",
+      });
+    }
+
+    // Create new submission
+    await prisma.submission.create({
+      data: {
+        city,
+        doctorName,
+        uin,
+        interestedInSemaglutide,
+        submittedAt: submittedAt ? new Date(submittedAt) : new Date(),
+      },
+    });
 
     return NextResponse.json({
       success: true,
-      message: isUpdate ? "Response updated successfully" : "Survey submitted successfully",
+      message: "Survey submitted successfully",
     });
   } catch (error) {
     console.error("Submission error:", error);
     return NextResponse.json(
       { success: false, message: "Internal server error" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }
 
 export async function GET() {
-  // Return all submissions (for admin/debug purposes)
-  const allSubmissions = Array.from(submissions.values());
-  return NextResponse.json({
-    success: true,
-    count: allSubmissions.length,
-    submissions: allSubmissions,
-  });
+  try {
+    const submissions = await prisma.submission.findMany({
+      orderBy: { submittedAt: "desc" },
+    });
+
+    return NextResponse.json({
+      success: true,
+      count: submissions.length,
+      submissions,
+    });
+  } catch (error) {
+    console.error("Error fetching submissions:", error);
+    return NextResponse.json(
+      { success: false, message: "Internal server error" },
+      { status: 500 },
+    );
+  }
 }

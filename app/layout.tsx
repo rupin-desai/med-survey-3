@@ -3,7 +3,8 @@ import "./globals.css";
 
 export const metadata: Metadata = {
   title: "Semaglutide Interest Survey",
-  description: "Survey on interest in Semaglutide for patient treatment among doctors.",
+  description:
+    "Survey on interest in Semaglutide for patient treatment among doctors.",
 };
 
 export default function RootLayout({
@@ -13,9 +14,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className="antialiased">
-        {children}
-      </body>
+      <body className="antialiased">{children}</body>
     </html>
   );
 }

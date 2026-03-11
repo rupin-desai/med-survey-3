@@ -3,7 +3,13 @@
 import { useState, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import doctorData from "@/data/doctors.json";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -15,7 +21,16 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { FileText, Loader2, MapPin, User, Hash, CircleHelp, ThumbsUp, ThumbsDown } from "lucide-react";
+import {
+  FileText,
+  Loader2,
+  MapPin,
+  User,
+  Hash,
+  CircleHelp,
+  ThumbsUp,
+  ThumbsDown,
+} from "lucide-react";
 
 type DoctorMap = Record<string, { name: string; uin: string }[]>;
 const doctors: DoctorMap = doctorData as DoctorMap;
@@ -63,7 +78,7 @@ export default function SurveyPage() {
         uin,
         interestedInSemaglutide: interested,
         submittedAt: new Date().toISOString(),
-        isUpdate: isUpdateForm
+        isUpdate: isUpdateForm,
       };
 
       const res = await fetch("/api/submit", {
@@ -78,7 +93,7 @@ export default function SurveyPage() {
         router.push("/thank-you");
       } else if (result.duplicate) {
         const confirmUpdate = window.confirm(
-          "This doctor (UIN) has already submitted a response. Do you want to update it with your new answers?"
+          "This doctor (UIN) has already submitted a response. Do you want to update it with your new answers?",
         );
         if (confirmUpdate) {
           await handleSubmit(undefined, true);
@@ -147,7 +162,10 @@ export default function SurveyPage() {
 
               {/* Doctor Name Selection - Using native input with datalist for search */}
               <div className="space-y-2">
-                <Label htmlFor="doctor-input" className="flex items-center gap-2">
+                <Label
+                  htmlFor="doctor-input"
+                  className="flex items-center gap-2"
+                >
                   <User className="h-4 w-4 text-muted-foreground" />
                   Select your Name
                 </Label>
@@ -204,7 +222,8 @@ export default function SurveyPage() {
               <div className="space-y-4">
                 <Label className="text-base font-medium flex items-start gap-2">
                   <CircleHelp className="h-5 w-5 text-muted-foreground mt-0.5 flex-shrink-0" />
-                  Will you be interested in knowing more about Semaglutide to use it for your patients?
+                  Will you be interested in knowing more about Semaglutide to
+                  use it for your patients?
                 </Label>
                 <RadioGroup
                   value={interested}
@@ -219,8 +238,14 @@ export default function SurveyPage() {
                         : "border-border bg-background"
                     }`}
                   >
-                    <RadioGroupItem value="Yes" id="interested-yes" className="cursor-pointer" />
-                    <ThumbsUp className={`h-4 w-4 ${interested === "Yes" ? "text-primary" : "text-muted-foreground"}`} />
+                    <RadioGroupItem
+                      value="Yes"
+                      id="interested-yes"
+                      className="cursor-pointer"
+                    />
+                    <ThumbsUp
+                      className={`h-4 w-4 ${interested === "Yes" ? "text-primary" : "text-muted-foreground"}`}
+                    />
                     <span className="font-medium">Yes</span>
                   </label>
                   <label
@@ -231,8 +256,14 @@ export default function SurveyPage() {
                         : "border-border bg-background"
                     }`}
                   >
-                    <RadioGroupItem value="No" id="interested-no" className="cursor-pointer" />
-                    <ThumbsDown className={`h-4 w-4 ${interested === "No" ? "text-primary" : "text-muted-foreground"}`} />
+                    <RadioGroupItem
+                      value="No"
+                      id="interested-no"
+                      className="cursor-pointer"
+                    />
+                    <ThumbsDown
+                      className={`h-4 w-4 ${interested === "No" ? "text-primary" : "text-muted-foreground"}`}
+                    />
                     <span className="font-medium">No</span>
                   </label>
                 </RadioGroup>

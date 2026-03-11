@@ -24,11 +24,11 @@ for (const row of rows) {
   const city = (row["CITY"] || row["City"] || row["city"] || "").toString().trim().toUpperCase();
   if (!city) continue;
   if (!grouped[city]) grouped[city] = [];
-  
+
   // Try different possible column names for Doctor Name and UIN
   const name = (row["Doctor Name"] || row["DOCTOR NAME"] || row["Name"] || row["NAME"] || "").toString().trim();
   const uin = (row["UIN Number"] || row["UIN NUMBER"] || row["UIN"] || row["uin"] || "").toString().trim();
-  
+
   if (name) {
     grouped[city].push({ name, uin });
   }

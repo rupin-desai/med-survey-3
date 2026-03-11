@@ -1,29 +1,37 @@
 import { NextResponse } from "next/server";
+import prisma from "@/lib/prisma";
 
 export const dynamic = "force-dynamic";
 
-// Temporary in-memory storage - will be replaced with Vercel serverless DB
-// This shares state with the submit route via module scope
-// Note: In production with serverless, you'll need a real database
-
-// For now, return empty array - will be connected to DB later
 export async function GET() {
   try {
-    // TODO: Replace with actual database query when connected to Vercel serverless DB
-    // For now, returning empty array as placeholder
-    // In production, this will fetch from your Vercel Postgres/KV store
-    
-    console.log("Fetching submissions from database...");
-    
-    // Placeholder - will be replaced with actual DB query
-    const submissions: unknown[] = [];
-    
-    return NextResponse.json(submissions);
+    const submissions = await prisma.submission.findMany({
+      orderBy: { submittedAt: "desc" },
+    });
+
+    // Transform to match the expected format for admin page
+    const formattedSubmissions = submissions.map(
+      (s: {
+        city: string;
+        doctorName: string;
+        uin: string;
+        interestedInSemaglutide: string;
+        submittedAt: Date;
+      }) => ({
+        city: s.city,
+        doctorName: s.doctorName,
+        uin: s.uin,
+        interestedInSemaglutide: s.interestedInSemaglutide,
+        submittedAt: s.submittedAt.toISOString(),
+      }),
+    );
+
+    return NextResponse.json(formattedSubmissions);
   } catch (error) {
     console.error("Error fetching submissions:", error);
     return NextResponse.json(
       { error: "Failed to fetch submissions" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }
