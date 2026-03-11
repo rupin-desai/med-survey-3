@@ -9,10 +9,12 @@ function getPrismaClient(): PrismaClient {
     return globalForPrisma.prisma;
   }
 
-  const accelerateUrl = process.env.STORAGE_URL;
+  const accelerateUrl = process.env.STORAGE_PRISMA_DATABASE_URL;
 
   if (!accelerateUrl) {
-    throw new Error("STORAGE_URL environment variable is not set");
+    throw new Error(
+      "STORAGE_PRISMA_DATABASE_URL environment variable is not set",
+    );
   }
 
   const client = new PrismaClient({
