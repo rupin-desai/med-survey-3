@@ -7,6 +7,17 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import {
+    AlertDialog,
+    AlertDialogAction,
+    AlertDialogCancel,
+    AlertDialogContent,
+    AlertDialogDescription,
+    AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogTitle,
+    AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 import { 
     Lock, 
     User, 
@@ -18,7 +29,8 @@ import {
     ThumbsDown,
     Loader2,
     LogIn,
-    LayoutDashboard
+    LayoutDashboard,
+    Trash2
 } from "lucide-react";
 
 interface Submission {
@@ -40,6 +52,11 @@ export default function AdminPage() {
     const [password, setPassword] = useState("");
     const [loginError, setLoginError] = useState("");
     const [loginLoading, setLoginLoading] = useState(false);
+
+    // Clear Database State
+    const [clearDialogOpen, setClearDialogOpen] = useState(false);
+    const [confirmText, setConfirmText] = useState("");
+    const [clearLoading, setClearLoading] = useState(false);
 
     const handleLogin = (e: React.FormEvent) => {
         e.preventDefault();
@@ -98,6 +115,26 @@ export default function AdminPage() {
         const workbook = XLSX.utils.book_new();
         XLSX.utils.book_append_sheet(workbook, worksheet, "Submissions");
         XLSX.writeFile(workbook, `semaglutide_survey_${new Date().toISOString().split('T')[0]}.xlsx`);
+    };
+
+    const handleClearDatabase = async () => {
+        if (confirmText !== "CONFIRM") return;
+        
+        setClearLoading(true);
+        try {
+            const response = await fetch("/api/clear", { method: "DELETE" });
+            if (response.ok) {
+                setSubmissions([]);
+                setClearDialogOpen(false);
+                setConfirmText("");
+            } else {
+                console.error("Failed to clear database");
+            }
+        } catch (error) {
+            console.error("Error clearing database:", error);
+        } finally {
+            setClearLoading(false);
+        }
     };
 
     const stats = {
