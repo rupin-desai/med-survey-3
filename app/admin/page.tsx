@@ -255,6 +255,56 @@ export default function AdminPage() {
                         </div>
                     </div>
                     <div className="flex items-center gap-3">
+                        <AlertDialog open={clearDialogOpen} onOpenChange={setClearDialogOpen}>
+                            <AlertDialogTrigger asChild>
+                                <Button
+                                    variant="outline"
+                                    className="cursor-pointer hover:bg-destructive/10 hover:text-destructive hover:border-destructive transition-colors"
+                                >
+                                    <Trash2 className="h-4 w-4 mr-2" />
+                                    Clear Database
+                                </Button>
+                            </AlertDialogTrigger>
+                            <AlertDialogContent>
+                                <AlertDialogHeader>
+                                    <AlertDialogTitle className="text-destructive">Clear All Data?</AlertDialogTitle>
+                                    <AlertDialogDescription>
+                                        This action cannot be undone. This will permanently delete all {submissions.length} survey submissions from the database.
+                                        <br /><br />
+                                        Type <span className="font-bold text-foreground">CONFIRM</span> below to proceed:
+                                    </AlertDialogDescription>
+                                </AlertDialogHeader>
+                                <Input
+                                    value={confirmText}
+                                    onChange={(e) => setConfirmText(e.target.value)}
+                                    placeholder="Type CONFIRM to delete"
+                                    className="mt-2"
+                                />
+                                <AlertDialogFooter>
+                                    <AlertDialogCancel onClick={() => setConfirmText("")} className="cursor-pointer">
+                                        Cancel
+                                    </AlertDialogCancel>
+                                    <Button
+                                        onClick={handleClearDatabase}
+                                        disabled={confirmText !== "CONFIRM" || clearLoading}
+                                        variant="destructive"
+                                        className="cursor-pointer"
+                                    >
+                                        {clearLoading ? (
+                                            <>
+                                                <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                                                Clearing...
+                                            </>
+                                        ) : (
+                                            <>
+                                                <Trash2 className="h-4 w-4 mr-2" />
+                                                Delete All Data
+                                            </>
+                                        )}
+                                    </Button>
+                                </AlertDialogFooter>
+                            </AlertDialogContent>
+                        </AlertDialog>
                         <Button
                             onClick={exportToExcel}
                             variant="outline"
