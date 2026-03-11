@@ -15,7 +15,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { FileText, Loader2 } from "lucide-react";
+import { FileText, Loader2, MapPin, User, Hash, CircleHelp, ThumbsUp, ThumbsDown } from "lucide-react";
 
 type DoctorMap = Record<string, { name: string; uin: string }[]>;
 const doctors: DoctorMap = doctorData as DoctorMap;
@@ -127,14 +127,17 @@ export default function SurveyPage() {
 
               {/* City Selection */}
               <div className="space-y-2">
-                <Label htmlFor="city">Select your City</Label>
+                <Label htmlFor="city" className="flex items-center gap-2">
+                  <MapPin className="h-4 w-4 text-muted-foreground" />
+                  Select your City
+                </Label>
                 <Select value={city} onValueChange={handleCityChange}>
-                  <SelectTrigger className="w-full h-10">
+                  <SelectTrigger className="w-full h-10 cursor-pointer hover:border-primary/50 transition-colors">
                     <SelectValue placeholder="— Choose a city —" />
                   </SelectTrigger>
                   <SelectContent>
                     {cities.map((c) => (
-                      <SelectItem key={c} value={c}>
+                      <SelectItem key={c} value={c} className="cursor-pointer">
                         {c}
                       </SelectItem>
                     ))}
@@ -144,7 +147,10 @@ export default function SurveyPage() {
 
               {/* Doctor Name Selection - Using native input with datalist for search */}
               <div className="space-y-2">
-                <Label htmlFor="doctor-input">Select your Name</Label>
+                <Label htmlFor="doctor-input" className="flex items-center gap-2">
+                  <User className="h-4 w-4 text-muted-foreground" />
+                  Select your Name
+                </Label>
                 <Input
                   id="doctor-input"
                   type="text"
@@ -158,7 +164,7 @@ export default function SurveyPage() {
                       ? `Type to search (${filteredDoctors.length} doctors)...`
                       : "Select a city first"
                   }
-                  className="h-10"
+                  className="h-10 cursor-text hover:border-primary/50 transition-colors focus:cursor-text"
                 />
                 <datalist id="doctor-options">
                   {filteredDoctors.map((d) => (
@@ -169,7 +175,10 @@ export default function SurveyPage() {
 
               {/* UIN - Auto-populated */}
               <div className="space-y-2">
-                <Label htmlFor="uin">Doctor UIN (Auto-filled)</Label>
+                <Label htmlFor="uin" className="flex items-center gap-2">
+                  <Hash className="h-4 w-4 text-muted-foreground" />
+                  Doctor UIN (Auto-filled)
+                </Label>
                 <Input
                   id="uin"
                   type="text"
@@ -193,26 +202,39 @@ export default function SurveyPage() {
               </div>
 
               <div className="space-y-4">
-                <Label className="text-base font-medium">
+                <Label className="text-base font-medium flex items-start gap-2">
+                  <CircleHelp className="h-5 w-5 text-muted-foreground mt-0.5 flex-shrink-0" />
                   Will you be interested in knowing more about Semaglutide to use it for your patients?
                 </Label>
                 <RadioGroup
                   value={interested}
                   onValueChange={setInterested}
-                  className="flex flex-wrap gap-4"
+                  className="flex flex-wrap gap-4 pt-2"
                 >
-                  <div className="flex items-center space-x-2">
-                    <RadioGroupItem value="Yes" id="interested-yes" />
-                    <Label htmlFor="interested-yes" className="cursor-pointer font-normal">
-                      Yes
-                    </Label>
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    <RadioGroupItem value="No" id="interested-no" />
-                    <Label htmlFor="interested-no" className="cursor-pointer font-normal">
-                      No
-                    </Label>
-                  </div>
+                  <label
+                    htmlFor="interested-yes"
+                    className={`flex items-center gap-3 px-5 py-3 rounded-lg border-2 cursor-pointer transition-all duration-200 hover:border-primary/50 hover:bg-accent/50 ${
+                      interested === "Yes"
+                        ? "border-primary bg-accent text-primary"
+                        : "border-border bg-background"
+                    }`}
+                  >
+                    <RadioGroupItem value="Yes" id="interested-yes" className="cursor-pointer" />
+                    <ThumbsUp className={`h-4 w-4 ${interested === "Yes" ? "text-primary" : "text-muted-foreground"}`} />
+                    <span className="font-medium">Yes</span>
+                  </label>
+                  <label
+                    htmlFor="interested-no"
+                    className={`flex items-center gap-3 px-5 py-3 rounded-lg border-2 cursor-pointer transition-all duration-200 hover:border-primary/50 hover:bg-accent/50 ${
+                      interested === "No"
+                        ? "border-primary bg-accent text-primary"
+                        : "border-border bg-background"
+                    }`}
+                  >
+                    <RadioGroupItem value="No" id="interested-no" className="cursor-pointer" />
+                    <ThumbsDown className={`h-4 w-4 ${interested === "No" ? "text-primary" : "text-muted-foreground"}`} />
+                    <span className="font-medium">No</span>
+                  </label>
                 </RadioGroup>
               </div>
             </div>
@@ -223,12 +245,12 @@ export default function SurveyPage() {
             <Button
               type="submit"
               disabled={!isFormValid || submitting}
-              className="w-full h-12 text-base font-semibold"
+              className="w-full h-12 text-base font-semibold cursor-pointer hover:scale-[1.01] active:scale-[0.99] transition-all duration-200 disabled:cursor-not-allowed disabled:hover:scale-100"
               size="lg"
             >
               {submitting ? (
                 <span className="inline-flex items-center gap-2">
-                  <Loader2 className="h-4 w-4 animate-spin" />
+                  <Loader2 className="h-5 w-5 animate-spin" />
                   Submitting…
                 </span>
               ) : (
