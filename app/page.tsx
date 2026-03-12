@@ -60,13 +60,6 @@ export default function SurveyPage() {
     setUin("");
   }
 
-  function handleDoctorInputChange(e: React.ChangeEvent<HTMLInputElement>) {
-    const name = e.target.value;
-    setDoctorName(name);
-    const doc = filteredDoctors.find((d) => d.name === name);
-    setUin(doc?.uin || "");
-  }
-
   async function handleSubmit(e?: React.FormEvent, isUpdateForm = false) {
     if (e) e.preventDefault();
     setSubmitting(true);
@@ -160,35 +153,45 @@ export default function SurveyPage() {
                 </Select>
               </div>
 
-              {/* Doctor Name Selection - Using native input with datalist for search */}
+              {/* Doctor Name Selection - Using proper dropdown */}
               <div className="space-y-2">
                 <Label
-                  htmlFor="doctor-input"
+                  htmlFor="doctor-select"
                   className="flex items-center gap-2"
                 >
                   <User className="h-4 w-4 text-muted-foreground" />
                   Select your Name
                 </Label>
-                <Input
-                  id="doctor-input"
-                  type="text"
-                  list="doctor-options"
+                <Select
                   value={doctorName}
-                  onChange={handleDoctorInputChange}
-                  required
+                  onValueChange={(value) => {
+                    setDoctorName(value);
+                    const doc = filteredDoctors.find((d) => d.name === value);
+                    setUin(doc?.uin || "");
+                  }}
                   disabled={!city}
-                  placeholder={
-                    city
-                      ? `Type to search (${filteredDoctors.length} doctors)...`
-                      : "Select a city first"
-                  }
-                  className="h-10 cursor-text hover:border-primary/50 transition-colors focus:cursor-text"
-                />
-                <datalist id="doctor-options">
-                  {filteredDoctors.map((d) => (
-                    <option key={d.uin} value={d.name} />
-                  ))}
-                </datalist>
+                >
+                  <SelectTrigger className="w-full h-10 cursor-pointer hover:border-primary/50 transition-colors">
+                    <SelectValue
+                      placeholder={
+                        city
+                          ? `— Choose a doctor (${filteredDoctors.length}) —`
+                          : "Select a city first"
+                      }
+                    />
+                  </SelectTrigger>
+                  <SelectContent className="max-h-[300px]">
+                    {filteredDoctors.map((d) => (
+                      <SelectItem
+                        key={d.uin}
+                        value={d.name}
+                        className="cursor-pointer"
+                      >
+                        {d.name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
               </div>
 
               {/* UIN - Auto-populated */}

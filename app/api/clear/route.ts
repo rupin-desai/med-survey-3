@@ -8,15 +8,15 @@ export async function DELETE() {
     // Delete all submissions
     await prisma.submission.deleteMany({});
 
-    return NextResponse.json({ 
-      success: true, 
-      message: "All submissions have been deleted" 
+    return NextResponse.json({
+      success: true,
+      message: "All submissions have been deleted",
     });
   } catch (error) {
     console.error("Error clearing database:", error);
     return NextResponse.json(
       { error: "Failed to clear database" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }
