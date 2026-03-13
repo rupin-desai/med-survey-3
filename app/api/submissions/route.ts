@@ -15,12 +15,14 @@ export async function GET() {
         city: string;
         doctorName: string;
         uin: string;
+        semaglutideRelevantForPractice: string | null;
         interestedInSemaglutide: string;
         submittedAt: Date;
       }) => ({
         city: s.city,
         doctorName: s.doctorName,
         uin: s.uin,
+        semaglutideRelevantForPractice: s.semaglutideRelevantForPractice,
         interestedInSemaglutide: s.interestedInSemaglutide,
         submittedAt: s.submittedAt.toISOString(),
       }),

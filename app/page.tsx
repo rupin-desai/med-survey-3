@@ -44,8 +44,10 @@ export default function SurveyPage() {
   const [doctorName, setDoctorName] = useState("");
   const [uin, setUin] = useState("");
 
-  // Survey answer
-  const [interested, setInterested] = useState("");
+  // Survey answers
+  const [semaglutideRelevantForPractice, setSemaglutideRelevantForPractice] =
+    useState("");
+  const [interestedInSemaglutide, setInterestedInSemaglutide] = useState("");
 
   const cities = useMemo(() => Object.keys(doctors).sort(), []);
 
@@ -69,7 +71,8 @@ export default function SurveyPage() {
         city,
         doctorName,
         uin,
-        interestedInSemaglutide: interested,
+        semaglutideRelevantForPractice,
+        interestedInSemaglutide,
         submittedAt: new Date().toISOString(),
         isUpdate: isUpdateForm,
       };
@@ -104,7 +107,13 @@ export default function SurveyPage() {
     }
   }
 
-  const isFormValid = !!(city && doctorName && uin && interested);
+  const isFormValid = !!(
+    city &&
+    doctorName &&
+    uin &&
+    semaglutideRelevantForPractice &&
+    interestedInSemaglutide
+  );
 
   return (
     <div className="flex min-h-screen items-start justify-center px-4 py-8 sm:py-12">
@@ -213,30 +222,80 @@ export default function SurveyPage() {
 
             <hr className="border-border" />
 
-            {/* Section 2: Survey Question */}
+            {/* Section 2: Survey Questions */}
             <div className="space-y-5">
               <div className="flex items-center gap-2 text-sm font-semibold uppercase tracking-wider text-primary">
                 <span className="flex h-6 w-6 items-center justify-center rounded-full bg-primary text-xs font-bold text-primary-foreground">
                   2
                 </span>
-                Survey Question
+                Survey Questions
               </div>
 
               <div className="space-y-4">
                 <Label className="text-base font-medium flex items-start gap-2">
                   <CircleHelp className="h-5 w-5 text-muted-foreground mt-0.5 flex-shrink-0" />
+                  1. Will semaglutide be relevant for your practice?
+                </Label>
+                <RadioGroup
+                  value={semaglutideRelevantForPractice}
+                  onValueChange={setSemaglutideRelevantForPractice}
+                  className="flex flex-wrap gap-4 pt-2"
+                >
+                  <label
+                    htmlFor="relevant-yes"
+                    className={`flex items-center gap-3 px-5 py-3 rounded-lg border-2 cursor-pointer transition-all duration-200 hover:border-primary/50 hover:bg-accent/50 ${
+                      semaglutideRelevantForPractice === "Yes"
+                        ? "border-primary bg-accent text-primary"
+                        : "border-border bg-background"
+                    }`}
+                  >
+                    <RadioGroupItem
+                      value="Yes"
+                      id="relevant-yes"
+                      className="cursor-pointer"
+                    />
+                    <ThumbsUp
+                      className={`h-4 w-4 ${semaglutideRelevantForPractice === "Yes" ? "text-primary" : "text-muted-foreground"}`}
+                    />
+                    <span className="font-medium">Yes</span>
+                  </label>
+                  <label
+                    htmlFor="relevant-no"
+                    className={`flex items-center gap-3 px-5 py-3 rounded-lg border-2 cursor-pointer transition-all duration-200 hover:border-primary/50 hover:bg-accent/50 ${
+                      semaglutideRelevantForPractice === "No"
+                        ? "border-primary bg-accent text-primary"
+                        : "border-border bg-background"
+                    }`}
+                  >
+                    <RadioGroupItem
+                      value="No"
+                      id="relevant-no"
+                      className="cursor-pointer"
+                    />
+                    <ThumbsDown
+                      className={`h-4 w-4 ${semaglutideRelevantForPractice === "No" ? "text-primary" : "text-muted-foreground"}`}
+                    />
+                    <span className="font-medium">No</span>
+                  </label>
+                </RadioGroup>
+              </div>
+
+              <div className="space-y-4">
+                <Label className="text-base font-medium flex items-start gap-2">
+                  <CircleHelp className="h-5 w-5 text-muted-foreground mt-0.5 flex-shrink-0" />
+                  2.{" "}
                   Will you be interested in knowing more about Semaglutide to
                   use it for your patients?
                 </Label>
                 <RadioGroup
-                  value={interested}
-                  onValueChange={setInterested}
+                  value={interestedInSemaglutide}
+                  onValueChange={setInterestedInSemaglutide}
                   className="flex flex-wrap gap-4 pt-2"
                 >
                   <label
                     htmlFor="interested-yes"
                     className={`flex items-center gap-3 px-5 py-3 rounded-lg border-2 cursor-pointer transition-all duration-200 hover:border-primary/50 hover:bg-accent/50 ${
-                      interested === "Yes"
+                      interestedInSemaglutide === "Yes"
                         ? "border-primary bg-accent text-primary"
                         : "border-border bg-background"
                     }`}
@@ -247,14 +306,14 @@ export default function SurveyPage() {
                       className="cursor-pointer"
                     />
                     <ThumbsUp
-                      className={`h-4 w-4 ${interested === "Yes" ? "text-primary" : "text-muted-foreground"}`}
+                      className={`h-4 w-4 ${interestedInSemaglutide === "Yes" ? "text-primary" : "text-muted-foreground"}`}
                     />
                     <span className="font-medium">Yes</span>
                   </label>
                   <label
                     htmlFor="interested-no"
                     className={`flex items-center gap-3 px-5 py-3 rounded-lg border-2 cursor-pointer transition-all duration-200 hover:border-primary/50 hover:bg-accent/50 ${
-                      interested === "No"
+                      interestedInSemaglutide === "No"
                         ? "border-primary bg-accent text-primary"
                         : "border-border bg-background"
                     }`}
@@ -265,7 +324,7 @@ export default function SurveyPage() {
                       className="cursor-pointer"
                     />
                     <ThumbsDown
-                      className={`h-4 w-4 ${interested === "No" ? "text-primary" : "text-muted-foreground"}`}
+                      className={`h-4 w-4 ${interestedInSemaglutide === "No" ? "text-primary" : "text-muted-foreground"}`}
                     />
                     <span className="font-medium">No</span>
                   </label>

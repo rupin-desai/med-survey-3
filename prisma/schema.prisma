@@ -16,6 +16,7 @@ model Submission {
   city                    String
   doctorName              String
   uin                     String   @unique
+  semaglutideRelevantForPractice String?
   interestedInSemaglutide String
   submittedAt             DateTime @default(now())
   updatedAt               DateTime @updatedAt

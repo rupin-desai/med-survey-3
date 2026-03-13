@@ -43,6 +43,7 @@ interface Submission {
   city: string;
   doctorName: string;
   uin: string;
+  semaglutideRelevantForPractice?: string | null;
   interestedInSemaglutide: string;
   submittedAt: string;
 }
@@ -119,6 +120,7 @@ export default function AdminPage() {
       City: s.city,
       "Doctor Name": s.doctorName,
       UIN: s.uin,
+      "Relevant for Practice": s.semaglutideRelevantForPractice || "-",
       "Interested in Semaglutide": s.interestedInSemaglutide,
       "Submitted At": s.submittedAt,
     }));
@@ -443,6 +445,9 @@ export default function AdminPage() {
                     UIN
                   </th>
                   <th className="px-6 py-4 font-semibold text-muted-foreground text-center">
+                    Relevant?
+                  </th>
+                  <th className="px-6 py-4 font-semibold text-muted-foreground text-center">
                     Interested?
                   </th>
                 </tr>
@@ -461,6 +466,26 @@ export default function AdminPage() {
                       <td className="px-6 py-4">{s.doctorName}</td>
                       <td className="px-6 py-4 font-mono text-muted-foreground">
                         {s.uin}
+                      </td>
+                      <td className="px-6 py-4 text-center">
+                        {s.semaglutideRelevantForPractice ? (
+                          <span
+                            className={`inline-flex items-center gap-1 rounded-full px-3 py-1 text-xs font-semibold ${
+                              s.semaglutideRelevantForPractice === "Yes"
+                                ? "bg-success-light text-success"
+                                : "bg-destructive/10 text-destructive"
+                            }`}
+                          >
+                            {s.semaglutideRelevantForPractice === "Yes" ? (
+                              <ThumbsUp className="h-3 w-3" />
+                            ) : (
+                              <ThumbsDown className="h-3 w-3" />
+                            )}
+                            {s.semaglutideRelevantForPractice}
+                          </span>
+                        ) : (
+                          "-"
+                        )}
                       </td>
                       <td className="px-6 py-4 text-center">
                         <span
@@ -483,7 +508,7 @@ export default function AdminPage() {
                 ) : (
                   <tr>
                     <td
-                      colSpan={5}
+                      colSpan={6}
                       className="px-6 py-12 text-center text-muted-foreground italic"
                     >
                       No submissions found matching your criteria.

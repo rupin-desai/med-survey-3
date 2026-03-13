@@ -8,13 +8,20 @@ export async function POST(request: NextRequest) {
       city,
       doctorName,
       uin,
+      semaglutideRelevantForPractice,
       interestedInSemaglutide,
       submittedAt,
       isUpdate,
     } = body;
 
     // Validate required fields
-    if (!city || !doctorName || !uin || !interestedInSemaglutide) {
+    if (
+      !city ||
+      !doctorName ||
+      !uin ||
+      !semaglutideRelevantForPractice ||
+      !interestedInSemaglutide
+    ) {
       return NextResponse.json(
         { success: false, message: "Missing required fields" },
         { status: 400 },
@@ -44,6 +51,7 @@ export async function POST(request: NextRequest) {
         data: {
           city,
           doctorName,
+          semaglutideRelevantForPractice,
           interestedInSemaglutide,
           updatedAt: new Date(),
         },
@@ -61,6 +69,7 @@ export async function POST(request: NextRequest) {
         city,
         doctorName,
         uin,
+        semaglutideRelevantForPractice,
         interestedInSemaglutide,
         submittedAt: submittedAt ? new Date(submittedAt) : new Date(),
       },
